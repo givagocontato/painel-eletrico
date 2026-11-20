@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Elétrico na Prática: painel de métricas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#f4f4f5; --card:#fff; --ink:#111214; --mut:#6b7280; --faint:#c4c7ce; --line:#e5e7eb; --y:#facc15; --y-d:#eab308; --y-soft:#fef9c3; --good:#15803d; --bad:#b91c1c; --warn:#92400e; }
+* { box-sizing: border-box; }
+html, body { margin:0; background:var(--bg); color:var(--ink); font-family:Montserrat,'Segoe UI',system-ui,sans-serif; }
+svg { display:block; }
+.main { max-width:1180px; margin:0 auto; padding:clamp(14px,2.4vw,28px); display:grid; gap:clamp(14px,2vw,22px); }
+.head { display:flex; justify-content:space-between; align-items:flex-end; gap:16px 24px; flex-wrap:wrap; }
+.brand { display:flex; align-items:center; gap:12px; }
+.mark { width:42px; height:42px; border-radius:50%; background:var(--y); display:grid; place-items:center; box-shadow:inset 0 0 0 3px var(--ink); flex:none; }
+.mark svg { width:20px; height:20px; fill:var(--ink); }
+.eyebrow { margin:0 0 4px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--mut); font-weight:700; }
+h1 { margin:0; font-size:clamp(22px,3.2vw,30px); font-weight:800; letter-spacing:-.01em; }
+.lede { margin:8px 0 0; color:var(--mut); max-width:64ch; line-height:1.6; font-size:14px; font-weight:500; }
+.lede b { color:var(--ink); }
+.head-r { display:flex; gap:12px; flex-wrap:wrap; }
+.pbox { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; display:grid; gap:6px; min-width:150px; }
+.pbox .k { font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mut); font-weight:700; }
+.pv { font-size:14px; font-weight:700; }
+.batt { display:flex; align-items:center; min-height:20px; }
+.batt-body { position:relative; width:74px; height:20px; border:2px solid var(--ink); border-radius:5px; overflow:hidden; background:#fff; }
+.batt-fill { position:absolute; inset:0 auto 0 0; background:var(--y); }
+.batt-cap { width:4px; height:9px; background:var(--ink); border-radius:0 2px 2px 0; margin-left:1px; }
+.batt-txt { margin-left:10px; font-size:14px; font-weight:700; }
+.note { border:1px solid var(--y-d); background:var(--y-soft); border-radius:10px; padding:12px 16px; display:grid; gap:4px; }
+.note b { font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; }
+.note p { margin:0; line-height:1.55; font-size:13px; font-weight:500; }
+.group { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:clamp(14px,2vw,22px); display:grid; gap:12px; align-content:start; min-width:0; }
+.ghead { display:flex; justify-content:space-between; gap:8px 16px; flex-wrap:wrap; align-items:center; }
+.gtitle { display:flex; align-items:center; gap:10px; }
+.gico { width:30px; height:30px; border-radius:8px; background:var(--y); display:grid; place-items:center; flex:none; }
+.gico svg { width:17px; height:17px; fill:none; stroke:var(--ink); stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+h2 { margin:0; font-size:17px; font-weight:800; }
+.src-line { margin:0; font-size:12px; color:var(--mut); line-height:1.5; font-weight:500; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,196px),1fr)); gap:12px; }
+.kpi { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px; display:grid; gap:6px; align-content:start; min-width:0; }
+.lbl { margin:0; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--mut); font-weight:600; line-height:1.4; }
+.val { margin:0; font-size:clamp(26px,2.8vw,32px); font-weight:800; font-variant-numeric:tabular-nums; line-height:1.1; }
+.val .u { font-size:.46em; color:var(--mut); margin-left:4px; font-weight:600; }
+.meta { margin:0; display:flex; gap:8px; align-items:center; min-height:22px; font-size:12px; font-weight:600; }
+.delta { color:var(--mut); }
+.chip { display:none; align-items:center; font-size:10.5px; padding:3px 9px; border-radius:999px; border:1px dashed var(--faint); color:var(--mut); font-weight:600; }
+.kpi.is-empty .chip { display:inline-flex; }
+.kpi.is-empty .val { color:var(--faint); }
+.kpi.is-empty .delta, .kpi.is-empty .u { display:none; }
+.hint { margin:0; font-size:12px; color:var(--mut); line-height:1.5; font-weight:500; }
+.hint.warn { color:var(--warn); }
+.meter { display:flex; gap:3px; height:9px; }
+.meter i { flex:1; border-radius:2px; background:#e5e7eb; }
+.meter i.on { background:var(--y); }
+.charts { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:16px; }
+@media (max-width:960px) { .charts { grid-template-columns:minmax(0,1fr); } }
+.selwrap { display:inline-flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mut); font-weight:700; }
+.sel { background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:7px 10px; font:inherit; font-size:13px; font-weight:600; text-transform:none; letter-spacing:0; max-width:100%; }
+.chart { position:relative; min-height:200px; width:100%; }
+.chart svg { width:100%; overflow:visible; }
+.axis-t { fill:var(--mut); font-size:11px; font-weight:500; }
+.axis-t.future { fill:var(--faint); }
+.blab { fill:var(--mut); font-size:12px; font-weight:600; }
+.bval { fill:var(--ink); font-size:13px; font-weight:800; }
+.cnote { fill:var(--mut); font-size:11px; font-weight:500; }
+.defs { border:1px solid var(--line); border-radius:12px; padding:12px 16px; background:var(--card); }
+.defs summary { cursor:pointer; font-weight:700; font-size:14px; }
+.defs ul { margin:10px 0 0; padding-left:18px; color:var(--mut); font-size:13px; line-height:1.6; display:grid; gap:4px; font-weight:500; }
+.foot { margin:0; font-size:12px; color:var(--mut); font-weight:500; }
+</style>
+</head>
+<body>
+<main class="main">
+<header class="head">
+<div class="brand">
+<span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
+<div>
+<p class="eyebrow">Elétrico na Prática</p>
+<h1>Painel de métricas</h1>
+<p class="lede">Acompanhamento mensal de audiência, buscas, IA (inteligência artificial), autoridade e produção. <b id="n-pre">0</b> de <b id="n-tot">0</b> métricas já têm dados.</p>
+</div>
+</div>
+<div class="head-r">
+<div class="pbox"><span class="k">Período</span><b class="pv" id="periodo">n/d</b></div>
+<div class="pbox"><span class="k">Cobertura de dados</span><div class="batt" id="bateria"></div></div>
+</div>
+</header>
+<div class="note"><b>Observação do período</b><p id="obs"></p></div>
+<div id="grupos"></div>
+<section class="charts">
+<div class="group">
+<div class="ghead"><div class="gtitle"><span class="gico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-9"/></svg></span><h2>Evolução mensal</h2></div>
+<label class="selwrap">Métrica <select id="trend-metric" class="sel" aria-label="Métrica do gráfico"></select></label></div>
+<p class="src-line">Um ponto por mês lançado. Os próximos meses aparecem vazios até receberem dados.</p>
+<div class="chart" id="trend"></div>
+</div>
+<div class="group">
+<div class="ghead"><div class="gtitle"><span class="gico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><h2>Volume do último período</h2></div></div>
+<p class="src-line">Usuários, sessões e visualizações de página. Cada célula é uma fatia de carga.</p>
+<div class="chart" id="volume"></div>
+</div>
+</section>
+<details class="defs">
+<summary>Como ler este painel</summary>
+<ul>
+<li>Cada cartão mostra o valor do último mês lançado e a variação sobre o mês anterior.</li>
+<li>A cor da variação indica se a mudança é boa ou ruim para aquela métrica.</li>
+<li>Cartões com "Aguardando dados" esperam o lançamento do portal ou o primeiro lançamento do mês.</li>
+<li>A cobertura de dados é a parte das 24 métricas que já tem valor no último mês.</li>
+<li>Esta versão é uma foto do momento. Os números não se atualizam sozinhos.</li>
+</ul>
+</details>
+<p class="foot">Fonte dos números atuais: Orbital Audience, de 01/09/2026 a 11/11/2026.</p>
+</main>
+<script>
+(function () {
+  var MESES = [
+    { mes: '2026-11', periodo: '01/09/2026 a 11/11/2026',
+      observacao: 'Pré-lançamento: acessos de teste e da equipe. O relatório filtrado cobre 72 de 236 visitantes. Fonte: Orbital Audience.',
+      usuarios: 72, sessoes: 144, visualizacoes: 110, visitas_por_usuario: 2.00, pags_por_sessao: 0.76,
+      tempo_sessao_seg: 90, taxa_engajamento: 68.9, retornantes_pct: 13.89 }
+  ];
+  var GRUPOS = [
+    { id: 'audiencia', t: 'Audiência', src: 'Fonte: Orbital Audience', ico: 'M4 15l1.6-5.2a2 2 0 0 1 1.9-1.4h9a2 2 0 0 1 1.9 1.4L20 15M3 15h18v4H3zM7.5 19h.01M16.5 19h.01', m: [
+      ['usuarios','Usuários','int','','up','Pessoas únicas que acessaram o portal.'],
+      ['sessoes','Sessões','int','','up','Visitas ao portal no período.'],
+      ['visualizacoes','Visualizações de página','int','','up','Páginas vistas no período.'],
+      ['visitas_por_usuario','Visitas por usuário','dec2','x','up','Média de sessões por visitante.'],
+      ['pags_por_sessao','Páginas por sessão','dec2','','up','Abaixo de 1 sugere sessões sem visualização registrada. Vale confirmar o cálculo com a Orbital.',true],
+      ['tempo_sessao_seg','Tempo médio de sessão','dur','','up','Calculado entre o primeiro e o último evento da sessão.'],
+      ['taxa_engajamento','Taxa de engajamento','dec1','%','up','Indicador de engajamento do relatório da Orbital Audience.',false,true],
+      ['retornantes_pct','Visitantes que retornam','dec2','%','up','Visitantes com mais de uma sessão no período.',false,true]
+    ]},
+    { id: 'visibilidade', t: 'Visibilidade nas buscas', src: 'Fonte: Search Console', ico: 'M4 17a8 8 0 1 1 16 0M12 17l4-5', m: [
+      ['impressoes','Impressões','int','','up','Vezes em que o portal apareceu nos resultados do Google.'],
+      ['cliques','Cliques','int','','up','Cliques vindos da busca do Google.'],
+      ['ctr_pct','CTR (taxa de cliques)','dec2','%','up','Cliques divididos por impressões.'],
+      ['posicao_media','Posição média','dec1','','down','Posição nos resultados. Quanto menor, melhor.'],
+      ['paginas_indexadas','Páginas indexadas','int','','up','Páginas publicadas que o Google já indexou.'],
+      ['consultas_top10','Consultas no top 10','int','','up','Buscas em que o portal aparece entre os 10 primeiros resultados.']
+    ]},
+    { id: 'ia', t: 'IA (inteligência artificial)', src: 'Fonte: teste mensal com 10 perguntas-alvo e fontes de tráfego', ico: 'M13 2 4 14h7l-1 8 9-12h-7z', m: [
+      ['visitas_ia','Visitas vindas de IA','int','','up','Acessos vindos de assistentes como ChatGPT, Perplexity e Gemini.'],
+      ['citacoes_ia','Citações em IA','int','de 10','up','Perguntas-alvo em que o portal foi citado nas respostas.']
+    ]},
+    { id: 'autoridade', t: 'Autoridade', src: 'Fonte: Search Console, ferramenta de backlinks e checagem manual', ico: 'M9 2v5M15 2v5M6 7h12v3a6 6 0 0 1-12 0zM12 16v6', m: [
+      ['buscas_marca','Buscas pelo nome do portal','int','','up','Buscas por Elétrico na Prática no Google.'],
+      ['dominios_linkando','Domínios que linkam','int','','up','Sites diferentes que apontam para o portal.'],
+      ['mencoes','Menções em outros veículos','int','','up','Citações do portal em outros sites e veículos.']
+    ]},
+    { id: 'producao', t: 'Produção editorial', src: 'Fonte: controle interno e plataforma de curadoria', ico: 'M2 7h17v10H2zM22 10.5v3M6 10v4M10 10v4', m: [
+      ['noticias_publicadas','Notícias publicadas','int','','up','Notícias publicadas no mês.'],
+      ['guias_publicados','Guias publicados','int','','up','Guias novos publicados no mês.'],
+      ['guias_atualizados','Guias atualizados','int','','up','Guias revisados com dados e preços novos.'],
+      ['reprovacao_pct','Reprovação na revisão','dec1','%','down','Textos reprovados na revisão humana, sobre o total revisado.'],
+      ['fontes_com_erro','Fontes com erro','int','','down','Fontes da curadoria que falharam na última busca.']
+    ]}
+  ];
+  var NS = 'http://www.w3.org/2000/svg';
+  function nf(min, max) { return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: min, maximumFractionDigits: max }); }
+  var F = {
+    int: function (v) { return nf(0, 0).format(v); },
+    dec1: function (v) { return nf(1, 1).format(v); },
+    dec2: function (v) { return nf(2, 2).format(v); },
+    dur: function (v) { var m = Math.floor(v / 60), s = Math.round(v - m * 60); return m > 0 ? m + 'm ' + String(s).padStart(2, '0') + 's' : s + 's'; }
+  };
+  function fmt(v, k) { return (v === null || v === undefined || isNaN(v)) ? 'n/d' : F[k](v); }
+  function num(v) { return (v === undefined || v === null || v === '') ? null : Number(v); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+  function svg(tag, attrs) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+
+  var meses = MESES.slice().sort(function (a, b) { return a.mes.localeCompare(b.mes); });
+  var atual = meses[meses.length - 1], anterior = meses.length > 1 ? meses[meses.length - 2] : null;
+  var todos = []; GRUPOS.forEach(function (g) { g.m.forEach(function (m) { todos.push(m); }); });
+  var cheias = todos.filter(function (m) { return num(atual[m[0]]) !== null; }).length;
+
+  document.getElementById('n-pre').textContent = cheias;
+  document.getElementById('n-tot').textContent = todos.length;
+  document.getElementById('periodo').textContent = atual.periodo;
+  document.getElementById('obs').textContent = atual.observacao;
+  var pct = Math.round(cheias / todos.length * 100), b = document.getElementById('bateria');
+  b.innerHTML = '<span class="batt-body"><span class="batt-fill" style="width:' + pct + '%"></span></span><span class="batt-cap"></span><b class="batt-txt">' + pct + '%</b>';
+
+  var root = document.getElementById('grupos');
+  root.style.display = 'grid'; root.style.gap = 'clamp(14px,2vw,22px)';
+  GRUPOS.forEach(function (g) {
+    var sec = el('section', 'group'); sec.id = g.id;
+    var h = el('div', 'ghead'), t = el('div', 'gtitle'), ic = el('span', 'gico');
+    var s = svg('svg', { viewBox: '0 0 24 24', 'aria-hidden': 'true' }); s.appendChild(svg('path', { d: g.ico })); ic.appendChild(s);
+    t.appendChild(ic); t.appendChild(el('h2', '', g.t)); h.appendChild(t); h.appendChild(el('p', 'src-line', g.src)); sec.appendChild(h);
+    var cards = el('div', 'cards');
+    g.m.forEach(function (m) {
+      var v = num(atual[m[0]]), p = anterior ? num(anterior[m[0]]) : null;
+      var c = el('article', 'kpi' + (v === null ? ' is-empty' : ''));
+      c.appendChild(el('h3', 'lbl', m[1]));
+      var val = el('p', 'val'); val.appendChild(document.createTextNode(fmt(v, m[2])));
+      if (m[3]) val.appendChild(el('span', 'u', m[3])); c.appendChild(val);
+      if (m[7] && v !== null) { var mt = el('div', 'meter'); var on = Math.round(Math.max(0, Math.min(100, v)) / 10); for (var i = 0; i < 10; i++) mt.appendChild(el('i', i < on ? 'on' : '')); c.appendChild(mt); }
+      var meta = el('p', 'meta'), d = el('span', 'delta');
+      if (v === null) d.textContent = 'n/d';
+      else if (p === null || p === 0) d.textContent = 'sem mês anterior';
+      else { var ch = (v - p) / p; d.textContent = (ch > 0 ? '▲ +' : ch < 0 ? '▼ -' : '') + nf(1, 1).format(Math.abs(ch) * 100) + '%'; if (ch !== 0) d.style.color = ((ch > 0) === (m[4] === 'up')) ? 'var(--good)' : 'var(--bad)'; }
+      meta.appendChild(d);
+      var chip = el('span', 'chip', 'Aguardando dados'); meta.appendChild(chip); c.appendChild(meta);
+      c.appendChild(el('p', 'hint' + (m[6] ? ' warn' : ''), m[5]));
+      cards.appendChild(c);
+    });
+    sec.appendChild(cards); root.appendChild(sec);
+  });
+
+  /* Volume */
+  var vol = document.getElementById('volume');
+  var defs = [['usuarios', 'Usuários', '#111214'], ['sessoes', 'Sessões', '#facc15'], ['visualizacoes', 'Visualizações de página', '#9ca3af']]
+    .map(function (d) { return { l: d[1], c: d[2], v: num(atual[d[0]]) }; }).filter(function (d) { return d.v !== null; });
+  function drawVolume() {
+    vol.replaceChildren();
+    if (!defs.length) { vol.appendChild(el('p', 'src-line', 'Sem dados ainda.')); return; }
+    var W = Math.max(220, vol.clientWidth), rowH = 58, H = defs.length * rowH, N = 20, gap = 3, cw = (W - 56 - gap * (N - 1)) / N;
+    var mx = Math.max.apply(null, defs.map(function (d) { return d.v; }));
+    var sv = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, width: '100%', height: H, role: 'img', 'aria-label': 'Usuários, sessões e visualizações de página no último período' });
+    defs.forEach(function (d, gi) {
+      var g = svg('g', { transform: 'translate(0,' + (gi * rowH) + ')' });
+      var lb = svg('text', { class: 'blab', y: 14 }); lb.textContent = d.l; g.appendChild(lb);
+      var on = Math.max(1, Math.round(d.v / mx * N));
+      for (var i = 0; i < N; i++) g.appendChild(svg('rect', { x: i * (cw + gap), y: 22, width: cw, height: 20, rx: 3, fill: i < on ? d.c : '#e5e7eb' }));
+      var vt = svg('text', { class: 'bval', x: on * (cw + gap) + 6, y: 38 }); vt.textContent = fmt(d.v, 'int'); g.appendChild(vt);
+      sv.appendChild(g);
+    });
+    vol.appendChild(sv);
+  }
+
+  /* Evolução */
+  var sel = document.getElementById('trend-metric');
+  GRUPOS.forEach(function (g) {
+    var og = document.createElement('optgroup'); og.label = g.t;
+    g.m.forEach(function (m) { var o = document.createElement('option'); o.value = m[0]; o.textContent = m[1]; o.dataset.fmt = m[2]; o.dataset.unit = m[3]; og.appendChild(o); });
+    sel.appendChild(og);
+  });
+  var MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  function drawTrend() {
+    var host = document.getElementById('trend'); host.replaceChildren();
+    var opt = sel.selectedOptions[0], col = sel.value, kind = opt.dataset.fmt, label = opt.textContent;
+    var pts = meses.map(function (m, i) { return { i: i, mes: m.mes, v: num(m[col]) }; }).filter(function (p) { return p.v !== null; });
+    var slots = Math.max(6, meses.length);
+    var W = Math.max(260, host.clientWidth), H = Math.round(Math.max(220, Math.min(300, W * 0.5)));
+    var sv = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, width: '100%', height: H, role: 'img', 'aria-label': 'Evolução mensal de ' + label });
+    var mx = pts.length ? Math.max.apply(null, pts.map(function (p) { return p.v; })) : 1, top = mx * 1.2 || 1;
+    var ml = 56, x = function (i) { return ml + 8 + (i + 0.5) * ((W - 14 - ml - 8) / slots); }, y = function (v) { return (H - 30) - v / top * (H - 42); };
+    for (var k = 0; k <= 4; k++) {
+      var tv = top * k / 4, yy = y(tv);
+      sv.appendChild(svg('line', { x1: ml, x2: W - 12, y1: yy, y2: yy, stroke: '#e5e7eb' }));
+      var tt = svg('text', { class: 'axis-t', x: ml - 8, y: yy + 4, 'text-anchor': 'end' }); tt.textContent = fmt(tv, kind); sv.appendChild(tt);
+    }
+    var start = meses.length ? meses[0].mes.split('-').map(Number) : [2026, 11];
+    for (var s = 0; s < slots; s++) {
+      var mi = (start[1] - 1 + s) % 12, yr = start[0] + Math.floor((start[1] - 1 + s) / 12);
+      var lt = svg('text', { class: 'axis-t' + (s >= meses.length ? ' future' : ''), x: x(s), y: H - 8, 'text-anchor': 'middle' });
+      lt.textContent = MES[mi] + '/' + String(yr).slice(2); sv.appendChild(lt);
+    }
+    if (!pts.length) {
+      var nt = svg('text', { class: 'cnote', x: (ml + W) / 2, y: H / 2, 'text-anchor': 'middle' }); nt.textContent = 'Ainda sem dados para esta métrica.'; sv.appendChild(nt);
+    } else {
+      if (pts.length > 1) sv.appendChild(svg('path', { d: pts.map(function (p, n) { return (n ? 'L' : 'M') + x(p.i) + ' ' + y(p.v); }).join(' '), fill: 'none', stroke: '#111214', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
+      else { var n2 = svg('text', { class: 'cnote', x: W - 14, y: 22, 'text-anchor': 'end' }); n2.textContent = 'A linha aparece a partir do 2º mês'; sv.appendChild(n2); }
+      pts.forEach(function (p) {
+        sv.appendChild(svg('circle', { cx: x(p.i), cy: y(p.v), r: 6, fill: '#facc15', stroke: '#111214', 'stroke-width': 2.5 }));
+        var vt = svg('text', { class: 'bval', x: x(p.i), y: y(p.v) - 14, 'text-anchor': 'middle' }); vt.textContent = fmt(p.v, kind); sv.appendChild(vt);
+      });
+    }
+    host.appendChild(sv);
+  }
+  sel.addEventListener('change', drawTrend);
+  function drawAll() { drawVolume(); drawTrend(); }
+  drawAll();
+  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
+})();
+</script>
+</body>
+</html>
