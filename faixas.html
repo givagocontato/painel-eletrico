@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Elétrico na Prática: faixa do painel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#f4f4f5; --card:#fff; --ink:#111214; --mut:#6b7280; --line:#e5e7eb; --y:#facc15; --y-d:#eab308; --y-soft:#fef9c3; --warn:#92400e; }
+* { box-sizing:border-box; }
+html, body { margin:0; background:var(--bg); color:var(--ink); font-family:Montserrat,'Segoe UI',system-ui,sans-serif; }
+svg { display:block; }
+.page { width:1200px; padding:24px; display:grid; gap:20px; }
+.head { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; height:104px; }
+.brand { display:flex; align-items:center; gap:14px; }
+.mark { width:46px; height:46px; border-radius:50%; background:var(--y); display:grid; place-items:center; box-shadow:inset 0 0 0 3px var(--ink); flex:none; }
+.mark svg { width:22px; height:22px; fill:var(--ink); }
+.eyebrow { margin:0 0 4px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--mut); font-weight:700; }
+h1 { margin:0; font-size:30px; font-weight:800; letter-spacing:-.01em; }
+.lede { margin:6px 0 0; color:var(--mut); font-size:14px; font-weight:500; }
+.pbox { width:300px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; display:grid; gap:6px; }
+.pbox .k { font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mut); font-weight:700; }
+.note { border:1px solid var(--y-d); background:var(--y-soft); border-radius:10px; padding:12px 16px; display:grid; gap:4px; }
+.note b { font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; }
+.note p { margin:0; line-height:1.55; font-size:13px; font-weight:500; }
+.group { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; display:grid; gap:14px; align-content:start; }
+.ghead { display:flex; justify-content:space-between; align-items:center; gap:16px; height:30px; }
+.gtitle { display:flex; align-items:center; gap:10px; }
+.gico { width:30px; height:30px; border-radius:8px; background:var(--y); display:grid; place-items:center; flex:none; }
+.gico svg { width:17px; height:17px; fill:none; stroke:var(--ink); stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+h2 { margin:0; font-size:17px; font-weight:800; }
+.src-line { margin:0; font-size:12px; color:var(--mut); font-weight:500; }
+.grid { display:grid; gap:12px; }
+.c4 { grid-template-columns:repeat(4,1fr); }
+.c5 { grid-template-columns:repeat(5,1fr); }
+.c3 { grid-template-columns:repeat(3,1fr); }
+.kpi { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; height:172px; display:grid; grid-template-rows:30px 66px 1fr; gap:6px; align-content:start; }
+.lbl { margin:0; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--mut); font-weight:600; line-height:1.4; }
+.hint { margin:0; font-size:12px; color:var(--mut); line-height:1.5; font-weight:500; }
+.box { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; height:336px; display:grid; grid-template-rows:auto auto 1fr; gap:6px; }
+.box h3 { margin:0; font-size:14px; font-weight:700; }
+.span2 { grid-column:span 2; }
+.span3 { grid-column:span 3; }
+.ia-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.ia-row .kpi, .ia-row .box { height:220px; }
+.ia-row .box { grid-column:span 3; }
+.defs ul { margin:0; padding-left:18px; color:var(--mut); font-size:13px; line-height:1.7; display:grid; gap:4px; font-weight:500; }
+.defs li b { color:var(--ink); }
+.foot { margin:0; font-size:12px; color:var(--mut); font-weight:500; }
+.slot { position:relative; }
+.guias .slot { outline:2px dashed var(--y-d); outline-offset:-2px; background:rgba(250,204,21,.14); border-radius:6px; }
+.guias .slot::after { content:attr(data-guia); display:block; padding:5px 8px; font-size:11px; font-weight:700; color:var(--warn); line-height:1.3; }
+
+body{background:#f4f4f5}
+.strip{width:1200px;padding:0 24px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;display:grid;gap:10px}
+.sec .ghead{height:30px}
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:4px 28px;margin:0;padding:0;list-style:none}
+.dl li{font-size:12px;line-height:1.5;color:var(--mut);font-weight:500}
+.dl li b{color:var(--ink)}
+.topo{padding-top:24px;display:grid;gap:16px}
+.guias2 .pbox{outline:2px dashed var(--y-d)}
+</style>
+</head>
+<body><div class="blk" data-b="topo"><div class="strip topo" id="topo"><header class="head"><div class="brand"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><div><p class="eyebrow">Elétrico na Prática</p><h1>Painel de métricas</h1><p class="lede">Audiência, buscas no Google e visitas vindas de IA (inteligência artificial).</p></div></div><div class="pbox"><span class="k">Período</span><div style="height:40px"></div></div></header><div class="note"><b>Sobre a atualização dos dados</b><p>O Search Console atualiza com 1 a 3 dias de atraso. O GA4 (Google Analytics 4) atualiza com algumas horas. Por isso, os números dos últimos dias podem mudar.</p></div></div></div><div class="blk" data-b="aud"><div class="strip" id="aud"><section class="sec"><div class="ghead"><div class="gtitle"><span class="gico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15l1.6-5.2a2 2 0 0 1 1.9-1.4h9a2 2 0 0 1 1.9 1.4L20 15M3 15h18v4H3zM7.5 19h.01M16.5 19h.01"/></svg></span><h2>Audiência</h2></div><p class="src-line">Fonte: GA4</p></div><ul class="dl"><li><b>Usuários:</b> pessoas únicas que acessaram o portal.</li><li><b>Sessões:</b> visitas ao portal no período.</li><li><b>Visualizações:</b> páginas abertas no período.</li><li><b>Visualizações por sessão:</b> média de páginas abertas em cada visita.</li><li><b>Duração média da sessão:</b> tempo médio que cada visita durou.</li><li><b>Taxa de engajamento:</b> parte das visitas com interação.</li><li><b>Sessões por usuário:</b> média de visitas por pessoa.</li><li><b>Usuários recorrentes:</b> pessoas que voltaram ao portal.</li></ul></section></div></div><div class="blk" data-b="buscas"><div class="strip" id="buscas"><section class="sec"><div class="ghead"><div class="gtitle"><span class="gico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17a8 8 0 1 1 16 0M12 17l4-5"/></svg></span><h2>Buscas no Google</h2></div><p class="src-line">Fonte: Search Console</p></div><ul class="dl"><li><b>Impressões:</b> vezes em que o portal apareceu no Google.</li><li><b>Cliques:</b> cliques vindos da busca do Google.</li><li><b>CTR (taxa de cliques):</b> cliques divididos por impressões.</li><li><b>Posição média:</b> posição nos resultados. Quanto menor, melhor.</li><li><b>Buscas pelo nome do portal:</b> buscas por Elétrico na Prática.</li><li><b>Consultas no top 10:</b> buscas em que o portal aparece entre os 10 primeiros.</li></ul></section></div></div><div class="blk" data-b="ia"><div class="strip" id="ia"><section class="sec"><div class="ghead"><div class="gtitle"><span class="gico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><h2>Visitas vindas de IA (inteligência artificial)</h2></div><p class="src-line">Fonte: GA4</p></div><ul class="dl"><li><b>Visitas vindas de IA:</b> acessos vindos de assistentes como ChatGPT, Perplexity e Gemini.</li></ul></section></div></div><div class="blk" data-b="glossario"><div class="strip" id="glossario"><section class="sec"><div class="ghead"><div class="gtitle"><span class="gico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11"/></svg></span><h2>Como ler este painel</h2></div></div><ul class="dl"><li><b>Atenção:</b> os cliques do Search Console e as sessões do GA4 medem coisas diferentes. Por isso, os números não coincidem.</li><li><b>Atualização:</b> dados do GA4 e do Search Console, atualizados automaticamente.</li></ul></section></div></div><script>
+var b=(location.search.match(/[?&]b=(\w+)/)||[])[1];
+document.querySelectorAll('.blk').forEach(function(e){if(e.dataset.b!==b)e.remove();});
+</script></body></html>
